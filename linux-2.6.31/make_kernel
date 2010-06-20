@@ -1,0 +1,12 @@
+#!/bin/sh
+
+make -j3 ARCH=arm CROSS_COMPILE=arm-unknown-linux-gnueabi-
+make ARCH=arm CROSS_COMPILE=arm-unknown-linux-gnueabi- modules_install
+cp arch/arm/boot/zImage zImage
+
+./mkimage -A arm -O linux -C none -T kernel -a 40400000 -e 40400000 -n linux-2.6 -d arch/arm/boot/zImage zlinux
+cp zlinux /var/tftpboot
+
+./elftosb2 -z -c ./imx233_linux.db -o linux.sb
+cp linux.sb /var/tftpboot
+cp zImage /var/tftpboot
